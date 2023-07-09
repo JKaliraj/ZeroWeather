@@ -10,6 +10,9 @@ data = {
     "region": response.get("region"),
     # "country": response.get("country_name")
 }
+
+data['region'] = "India" #Default region
+
 api_url = 'https://api.api-ninjas.com/v1/weather?city={}'.format(data['region'])
 mycityres = get(api_url, headers={'X-Api-Key': '/o/qGnffipWp3BOJ9LLl7g==blTrqJzDKNBbuZD7'})
 
