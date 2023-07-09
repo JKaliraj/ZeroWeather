@@ -92,6 +92,11 @@
 </div>
 
 <script>
+
+    if(! localStorage.getItem('citylist')){
+        localStorage.setItem('citylist',JSON.stringify([]));
+    }
+
     var addbtn = document.querySelector(".addtohome");
     var citylist = JSON.parse(localStorage.getItem('citylist'));
 
@@ -99,30 +104,32 @@
         addbtn.style.display = "none";
     }
 
-    try {
-        if (citylist.length > 0) {
-            citylist.foreach((data)=>{
-                if (data['city'].includes('{{city}}')) {
-                    addbtn.style.display = "none";
-                }
-            })
+    if(citylist.length > 0){
+        for(var i=0; i < citylist.length; i++){
+            if (citylist[i]['city'].includes('{{city}}')) {
+                addbtn.style.display = "none";
+                break;
+            }
         }
     }
-    catch { }
-
+        
     addbtn.addEventListener('click', () => {
         var citylist = JSON.parse(localStorage.getItem('citylist'));
         try {
-            if (!citylist.includes('{{city}}')) {
-                citylist.push({ 'city': '{{city}}' , 'condition' : '{{condition}}', 'temp':{{temp}}});
+            var counter = 0;
+            for(var i=0; i < citylist.length; i++){
+                if (citylist[i]['city'].includes('{{city}}')) {
+                    counter++;
+                    break;
+                }
+            }
+            if(counter==0){
+                addbtn.style.display = "none";
+                citylist.push({ city: '{{city}}' , condition : '{{condition}}', temp:{{temp}}});
                 localStorage.setItem('citylist', JSON.stringify(citylist));
             }
         }
-        catch {
-            var citylist = [];
-            citylist.push({ 'city': '{{city}}' , 'condition' : '{{condition}}', 'temp':{{temp}}});
-            localStorage.setItem('citylist', JSON.stringify(citylist));
-        }
+        catch {}
         addbtn.style.display = "none";
     })
 </script>

@@ -37,11 +37,6 @@
 {% endblock %}
 
 {% block container %}
-<script>
-    if(! localStorage.getItem('citylist')){
-        localStorage.setItem('citylist',JSON.stringify([]));
-    }
-</script>
 <div class="appbar">
     <div class="logo-group">
         <img src="{% static 'images/weather-icon.svg' %}" alt="">
@@ -78,7 +73,10 @@
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 <script>
-    
+     if(! localStorage.getItem('citylist')){
+        localStorage.setItem('citylist',JSON.stringify([]));
+    }
+
     const recent = document.querySelector('.recent'),
     recentcards = document.querySelector('.recentcards');
     var citylist = [];
@@ -86,29 +84,32 @@
         citylist = JSON.parse(localStorage.getItem('citylist'));
         if(citylist.length > 0){
             recent.style.display = "block";
-            citylist.forEach((city) => {
-                if(city['city'].toLowerCase() != '{{region}}'.toLowerCase()){ 
-                
-                var div = `
-                    <a href="{% url 'weather' 'city' %}" class="${city['city'].toLowerCase()}">
-                            <div class="card">
-                                <div class="content">
-                                    <div class="contentleft">
-                                        <h2>${city['city']}</h2>
-                                        <p>${city['condition']}</p>
-                                    </div>
-                                    <div class="contentright">
-                                        <h1>${city['temp']}<sup>o</sup></h1>
-                                    </div>
-                                </div>
-                            </div>
-                            </a>`;
-                recentcards.innerHTML += div;
-                var a = document.querySelector("."+city['city'].toLowerCase()+"")
-                var href = a.href.replace('city',city['city']);
-                a.href = href;
+            if(citylist.length > 0){
+                for(var i=0; i < citylist.length; i++){
+                    if (citylist[i]['city'].includes('{{city}}')) {
+                        var city = citylist[i];
+                        if(city['city'].toLowerCase() != '{{region}}'.toLowerCase()){ 
+                            var div = `<a href="{% url 'weather' 'city' %}" class="${city['city'].toLowerCase()}">
+                                        <div class="card">
+                                            <div class="content">
+                                                <div class="contentleft">
+                                                    <h2>${city['city']}</h2>
+                                                    <p>${city['condition']}</p>
+                                                </div>
+                                                <div class="contentright">
+                                                    <h1>${city['temp']}<sup>o</sup></h1>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </a>`;
+                            recentcards.innerHTML += div;
+                            var a = document.querySelector("."+city['city'].toLowerCase()+"")
+                            var href = a.href.replace('city',city['city']);
+                            a.href = href;
+                        }
+                    }
+                }
             }
-            });
         }
     }catch{}
 
