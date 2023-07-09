@@ -1,0 +1,122 @@
+{% load static %}
+{% include 'base.html' %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+<style>
+    body {
+        {% if time < 2 %}
+            background: url('{%static "images/morning.jpg" %}');
+        {% elif time < 8 %}
+            background: url('{%static "images/night.jpg" %}');
+        {% elif time < 3 %}
+            background: url('{%static "images/moon.png" %}');
+        {% else %}
+            background: url('{%static "images/morning.jpg" %}');
+        {% endif %}
+
+        background-size: cover;
+    }
+
+    .main .weathercards .mylocation {
+        {% if condition == 'Hot' %}
+            background: url('{%static "images/hot.gif" %}');
+            background-position: top right;
+        {% elif condition == 'Rainy' %}
+            background: url('{%static "images/rainy.gif" %}');
+            background-position: bottom;
+            background-size: cover;
+        {% else %}
+            background: url('{%static "images/normal.gif" %}');
+            background-position: top;
+            background-size: cover;
+        {% endif %}
+    }
+</style>
+{% endblock %}
+
+{% block container %}
+<script>
+    if(! localStorage.getItem('citylist')){
+        localStorage.setItem('citylist',JSON.stringify([]));
+    }
+</script>
+<div class="appbar">
+    <div class="logo-group">
+        <img src="{% static 'images/weather-icon.svg' %}" alt="">
+    </div>
+    <div class="input-group">
+        <form method="post" action="{% url 'city' %}">
+            {% csrf_token %}
+            <input class="search" type="text" placeholder="City" name="city" /><span class="bar"></span>
+        </form>
+    </div>
+</div>
+
+<div class="main">
+    <p>My Location</p>
+    <div class="weathercards">
+        <a href="{% url 'weather' region %}">
+            <div class="card mylocation">
+                <div class="content">
+                    <div class="contentleft">
+                        <h2>{{region}}</h2>
+                        <p>{{condition}}</p>
+                    </div>
+                    <div class="contentright">
+                        <h1>{{temp}}<sup>o</sup></h1>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="recent" style="display: none;">
+        <p style='width:100%;display:flex;justify-content:space-between;'><span>Recent Locations</span> <span onclick='clearrecent()'>Clear</span></p>
+        <div class='weathercards recentcards'></div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script>
+    
+    const recent = document.querySelector('.recent'),
+    recentcards = document.querySelector('.recentcards');
+    var citylist = [];
+    try{
+        citylist = JSON.parse(localStorage.getItem('citylist'));
+        if(citylist.length > 0){
+            recent.style.display = "block";
+            citylist.forEach((city) => {
+                if(city['city'].toLowerCase() != '{{region}}'.toLowerCase()){ 
+                
+                var div = `
+                    <a href="{% url 'weather' 'city' %}" class="${city['city'].toLowerCase()}">
+                            <div class="card">
+                                <div class="content">
+                                    <div class="contentleft">
+                                        <h2>${city['city']}</h2>
+                                        <p>${city['condition']}</p>
+                                    </div>
+                                    <div class="contentright">
+                                        <h1>${city['temp']}<sup>o</sup></h1>
+                                    </div>
+                                </div>
+                            </div>
+                            </a>`;
+                recentcards.innerHTML += div;
+                var a = document.querySelector("."+city['city'].toLowerCase()+"")
+                var href = a.href.replace('city',city['city']);
+                a.href = href;
+            }
+            });
+        }
+    }catch{}
+
+    function clearrecent(){
+        localStorage.removeItem('citylist');
+        recent.style.display = "none";
+        recent.innerHTML = "";
+    }
+</script>
+
+{% endblock %}
