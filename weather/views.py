@@ -92,7 +92,8 @@ def city(request):
             else:
                 condition = "Rainy" if weather['humidity'] > 70 else "Normal"
 
-            return render(request, 'weather.html', {"city":city.capitalize(),
+            return render(request, 'weather.html', {"region":data['region'],
+                                                "city":city.capitalize(),
                                                 "condition":condition,
                                                 "temp":weather['temp'],
                                                 "humidity":weather['humidity'],
