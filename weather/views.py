@@ -2,7 +2,6 @@ from django.shortcuts import render
 from requests import get, codes
 from datetime import datetime
 import random 
-from django.contr
 
 ip = get('https://api.ipify.org').text
 response = get(f'https://ipapi.co/{ip}/json/').json()
