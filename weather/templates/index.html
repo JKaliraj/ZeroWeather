@@ -6,12 +6,12 @@
 
 <style>
     body {
-        {% if time < 2 %}
-            background: url('{%static "images/morning.jpg" %}');
-        {% elif time < 8 %}
-            background: url('{%static "images/night.jpg" %}');
-        {% elif time < 3 %}
+        {% if time < 3 %}
             background: url('{%static "images/moon.png" %}');
+        {% elif time < 12 %}
+            background: url('{%static "images/morning.jpg" %}');
+        {% elif time < 23 %}
+            background: url('{%static "images/night.png" %}');
         {% else %}
             background: url('{%static "images/morning.jpg" %}');
         {% endif %}
@@ -37,10 +37,31 @@
 {% endblock %}
 
 {% block container %}
+
 <div class="appbar">
     <div class="logo-group">
         <img src="{% static 'images/weather-icon.svg' %}" alt="">
     </div>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert">
+            <p id="alert-text">{{ message }}</p>
+        </div>
+        {% endfor %}
+
+        <script>  
+            function wait(ms) {
+            return new Promise((resolve) => setTimeout(resolve, ms));
+            }
+            document.querySelector(".alert").classList.toggle("alertnow");
+            wait(3000).then(() => {
+                document.querySelector(".alert").classList.toggle("alertnow");
+                document.querySelector("#alert-text").textContent = "";
+            });
+        </script>
+    {% endif %}
+
     <div class="input-group">
         <form method="post" action="{% url 'city' %}">
             {% csrf_token %}
@@ -71,6 +92,7 @@
         <div class='weathercards recentcards'></div>
     </div>
 </div>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 <script>
      if(! localStorage.getItem('citylist')){

@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from requests import get, codes
 from datetime import datetime
-import random 
+import random
+from django.contrib import messages
 
 ip = get('https://api.ipify.org').text
 response = get(f'https://ipapi.co/{ip}/json/').json()
@@ -33,11 +34,14 @@ def home(request):
             condition = "Hot"
         else:
             condition = "Rainy" if weather['humidity'] > 70 else "Normal"
-        time = datetime.now().hour
+        # time = datetime.now().hour
+        timeresponse = dict(get('https://timeapi.io/api/Time/current/zone?timeZone=Asia/Kolkata').json())
+        time = int(timeresponse['hour'])
 
         return render(request, 'index.html', {"region":data['region'] , "condition":condition ,"temp":weather['temp'] ,"time":time})
+    else:
+        return redirect(request.META.get('HTTP_REFERER'))
     
-
 def weather(request, city):
     api_url = 'https://api.api-ninjas.com/v1/weather?city={}'.format(city)
     cityres = get(api_url, headers={'X-Api-Key': '/o/qGnffipWp3BOJ9LLl7g==blTrqJzDKNBbuZD7'})
@@ -68,7 +72,8 @@ def weather(request, city):
                                               "tomorrow":random.randint(weather['min_temp'], weather['max_temp']),
                                               "sunset":datetime.fromtimestamp(weather['sunset']).strftime("%I:%M %p"),
                                               "sunrise":datetime.fromtimestamp(weather['sunrise']).strftime("%I:%M %p")})
-    
+    else:
+        return redirect(request.META.get('HTTP_REFERER'))
 
 def city(request):
     if(request.method == "POST"):
@@ -101,3 +106,9 @@ def city(request):
                                                 "tomorrow":random.randint(weather['min_temp'], weather['max_temp']),
                                                 "sunset":datetime.fromtimestamp(weather['sunset']).strftime("%I:%M %p"),
                                                 "sunrise":datetime.fromtimestamp(weather['sunrise']).strftime("%I:%M %p")})
+        else:
+            messages.warning(request, "No city found!" )
+            return redirect(request.META.get('HTTP_REFERER'))
+    else:
+        messages.warning(request, "No city found!" )
+        return redirect(request.META.get('HTTP_REFERER'))

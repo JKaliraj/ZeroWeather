@@ -221,7 +221,7 @@ body {
   .main .dev{
     text-align: center;
     position: absolute;
-    bottom: 10px;
+    bottom: 30px;
     width: calc(100% - 40px);
   }
 
@@ -252,4 +252,22 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+  }
+
+  .alert {
+    width: calc(100% - 40px);
+    height: fit-content;
+    padding: 5px 8px;
+    border-radius: 10px;
+    transition: opacity 1s ease;
+    opacity: 0;
+    position: absolute;
+  }
+  .alert p{
+      color: #fff;
+      font-size: 18px;
+      text-align: center;
+  }
+  .alertnow {
+    opacity: 1;
   }

@@ -23,6 +23,24 @@
     <div class="logo-group">
         <a href="{% url 'home' %}"><img src="{% static 'images/icons8-back-100.png' %}" alt=""></a>
     </div>
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert">
+            <p id="alert-text">{{ message }}</p>
+        </div>
+        {% endfor %}
+
+        <script>  
+            function wait(ms) {
+            return new Promise((resolve) => setTimeout(resolve, ms));
+            }
+            document.querySelector(".alert").classList.toggle("alertnow");
+            wait(3000).then(() => {
+                document.querySelector(".alert").classList.toggle("alertnow");
+                document.querySelector("#alert-text").textContent = "";
+            });
+        </script>
+    {% endif %}
     <div class="input-group">
         <form method="post" action="{% url 'city' %}">
             {% csrf_token %}
@@ -87,7 +105,6 @@
         </div>
     </div>
 
-
     <p class="dev">Developed by <a href="https://krdeveloper.web.app/">KR</a></p>
 </div>
 
@@ -125,11 +142,11 @@
             }
             if(counter==0){
                 addbtn.style.display = "none";
-                citylist.push({ city: '{{city}}' , condition : '{{condition}}', temp:{{temp}}});
+                citylist.push({ city: '{{city}}' , condition : '{{condition}}', temp: {{temp}} });
                 localStorage.setItem('citylist', JSON.stringify(citylist));
             }
-        }
-        catch {}
+        }catch {}
+        
         addbtn.style.display = "none";
     })
 </script>
