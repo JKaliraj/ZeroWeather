@@ -34,9 +34,8 @@ def home(request):
             condition = "Hot"
         else:
             condition = "Rainy" if weather['humidity'] > 70 else "Normal"
-        # time = datetime.now().hour
-        timeresponse = dict(get('https://timeapi.io/api/Time/current/zone?timeZone=Asia/Kolkata').json())
-        time = int(timeresponse['hour'])
+
+        time = datetime.now().hour #-> showing server time while hosting 
 
         return render(request, 'index.html', {"region":data['region'] , "condition":condition ,"temp":weather['temp'] ,"time":time})
     else:
