@@ -77,13 +77,13 @@
     mybody.style = `background:url('{%static "images/night.jpg" %}'); background-size: cover`;
 
     const mylocation = document.querySelector(".mylocation");
-    {% if condition == 'Hot' %}
+    var condition = `{{condition}}`;
+    if(condition == 'Hot')
     mylocation.style = `background: url('{%static "images/hot.gif" %}');background-position: top right;`;
-    {% elif condition == 'Rainy' %}
+    else if(condition == 'Rainy')
     mylocation.style = `background: url('{%static "images/rainy.gif" %}');background-position: bottom;background-size: cover;`;
-    {% else %}
+    else
     mylocation.style = `background: url('{%static "images/normal.gif" %}');background-position: top;background-size: cover;`;
-    {% endif %}
 
 </script>
 

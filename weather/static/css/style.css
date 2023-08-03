@@ -198,3 +198,38 @@ body {
 .alertnow {
   opacity: 1;
 }
+
+
+/* Desktop View */
+::-webkit-scrollbar{
+  width: 5px;
+  background-color: white;
+}
+::-webkit-scrollbar-thumb{
+  background: black;
+}
+
+@media (min-width: 1000px) {
+  .appbar .input-group .search:focus {
+    width: 40vw;
+  }
+
+  body{
+    background-size: contain;
+  }
+
+  .main{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+
+ .main > .weathercards , .recent{
+    width: 50% !important;
+ }
+
+ .card{
+  backdrop-filter: blur(5px);
+ }
+
+}
